@@ -1,10 +1,15 @@
 import { Button } from '@/components/ui/button'
-import React from 'react'
+import Logout from '@/module/auth/components/logout'
+import { requireAuth } from '@/module/auth/utils/auth-utils'
 
-const page = () => {
+
+const page = async () => {
+  await requireAuth()
   return (
     <div className='flex items-center justify-center h-screen'>
-      <Button>Click Me</Button>
+      <Logout>
+        <Button>Logout</Button>
+      </Logout>
     </div>
   )
 }
