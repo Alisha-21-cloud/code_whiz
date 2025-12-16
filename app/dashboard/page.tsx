@@ -124,7 +124,7 @@ const MainPage = () => {
         <Card className='col-span-2'>
           <CardHeader>
             <CardTitle>Activity Overview</CardTitle>
-            <CardDescription>Monthly breakdown of commits, PRs, and reviews (last 6 months)</CardDescription>
+            <CardDescription>Monthly breakdown of Commits, PRs, and Reviews (last 6 months)</CardDescription>
           </CardHeader>
 
           <CardContent>
