@@ -8,6 +8,7 @@ import { ExternalLink, Star, Search } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import { useRepositories } from '@/module/repository/hooks/use-repositories'
 import { RepositoryListSkeleton } from '@/module/repository/components/repository-skeleton'
+import { useConnectRepository } from '@/module/repository/hooks/use-connect-repository'
 
 interface Repository {
     id: number
@@ -31,6 +32,8 @@ const RepositoryPage = () => {
         hasNextPage,
         isFetchingNextPage,
     } = useRepositories()
+
+    const { mutate: connectRepo } = useConnectRepository();
 
     const [localConnectingId, setLocalConnectingId] = useState<number | null>(null)
 
@@ -91,8 +94,15 @@ const RepositoryPage = () => {
         repo.full_name.toLowerCase().includes(searchQuery.toLowerCase())
     )
 
-    const handleConnect = (repo: any) => {
-
+    const handleConnect = (repo: Repository) => {
+        setLocalConnectingId(repo.id);
+        connectRepo({
+            owner: repo.full_name.split('/')[0],
+            repo: repo.name,
+            githubId: repo.id
+        }, {
+            onSettled: () => setLocalConnectingId(null)
+        })
     }
 
     return (
