@@ -1,3 +1,4 @@
+import { reviewPullRequest } from "@/module/ai/actions";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -9,6 +10,20 @@ export async function POST(req: NextRequest) {
 
         if (event === "ping") {
             return NextResponse.json({ msg: "pong" }, { status: 200 });
+        }
+
+        if (event === "pull_request") {
+            const action = body.action;
+            const repo = body.repository.full_name;
+            const prNumber = body.number;
+
+            const [owner, repoName] = repo.split("/");
+
+            if (action === "opened" || action === "synchronize" ) {
+                reviewPullRequest(owner, repoName, prNumber)
+                .then(() => console.log(`Reviewed PR #${prNumber} in ${repo}`))
+                .catch((error) => console.error(`Error reviewing PR #${prNumber} in ${repo}:`, error));
+            }
         }
 
         // Handle other GitHub events here
