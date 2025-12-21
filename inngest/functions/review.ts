@@ -38,29 +38,63 @@ export const generateReview = inngest.createFunction(
 
 
         const review = await step.run("generate-ai-review", async () => {
-            const prompt = `You are an expert code reviewer. Analyze the following pull request and provide a detailed, constructive code review.
+            const prompt = `# Updated Code Review Prompt
 
-PR Title: ${title}
-PR Description: ${description || "No description provided"}
+You are an expert code reviewer. Analyze the following pull request and provide a detailed, constructive code review.
 
-Context from Codebase:
+## PR Information
+**Title:** ${title}
+**Description:** ${description || "No description provided"}
+
+## Context from Codebase
 ${context.join("\n\n")}
 
-Code Changes:
+## Code Changes
 \`\`\`diff
 ${diff}
 \`\`\`
 
-Please provide:
-1. **Walkthrough**: A file-by-file explanation of the changes.
-2. **Sequence Diagram**: A Mermaid JS sequence diagram visualizing the flow of the changes (if applicable). Use \`\`\`mermaid ... \`\`\` block. **IMPORTANT**: Ensure the Mermaid syntax is valid. Do not use special characters (like quotes, braces, parentheses) inside Note text or labels as it breaks rendering. Keep the diagram simple.
-3. **Summary**: Brief overview.
-4. **Strengths**: What's done well.
-5. **Issues**: Bugs, security concerns, code smells.
-6. **Suggestions**: Specific code improvements.
-7. **Poem**: A short, creative poem summarizing the changes at the very end.
+## Review Requirements
 
-Format your response in markdown.`;
+Provide a comprehensive review with the following sections:
+
+### 1. Walkthrough
+A file-by-file explanation of the changes. Describe what each modification does and how it contributes to the overall change.
+
+### 2. Sequence Diagram (if applicable)
+Create a Mermaid JS sequence diagram visualizing the flow of the changes. Use a \`\`\`mermaid ... \`\`\` code block.
+
+**IMPORTANT Mermaid Guidelines:**
+- Ensure all Mermaid syntax is valid
+- Keep diagram labels simple and concise
+- Use alphanumeric characters and underscores only in labels
+- Avoid special characters like quotes, braces, parentheses inside Note text
+- Keep the diagram focused on the main flow
+- If multiple interactions exist, show the primary flow only
+
+### 3. Summary
+Brief overview of the PR's purpose and main changes.
+
+### 4. Strengths
+Identify what was done well in the implementation.
+
+### 5. Issues
+List any bugs, security concerns, code smells, or potential problems.
+- **Critical Issues:** Problems that will cause failures
+- **Major Issues:** Significant problems needing attention
+- **Minor Issues:** Small improvements or optimizations
+
+### 6. Suggestions
+Provide specific, actionable code improvements with examples where appropriate.
+
+### 7. Poem
+End with a short, creative poem (4-8 lines) summarizing the changes. Keep it light and relevant to the code changes.
+
+## Formatting Notes
+- Use proper markdown headings and bullet points
+- Keep technical explanations clear and concise
+- Provide code examples for suggestions when helpful
+- Balance constructive criticism with positive feedback`;
 
             const { text } = await generateText({
                 model: google("gemini-2.5-flash"),
